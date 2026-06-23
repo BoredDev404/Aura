@@ -18,11 +18,6 @@
             color: #292929;
         }
 
-        .masonry-grid { column-count: 2; column-gap: 1rem; }
-        @media (min-width: 640px) { .masonry-grid { column-count: 3; } }
-        @media (min-width: 1024px) { .masonry-grid { column-count: 4; } }
-        .masonry-item { break-inside: avoid; margin-bottom: 1rem; }
-
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
@@ -54,10 +49,14 @@
         <div class="flex items-center gap-2">
             <h1 class="text-xl font-extrabold tracking-tighter text-stone-900">Aura</h1>
             <span class="w-1.5 h-1.5 rounded-full bg-stone-300"></span>
-            <p class="text-xs text-stone-500 font-medium">Goals Board</p>
+            <p class="text-xs text-stone-500 font-medium">Goal Board</p>
         </div>
         <div class="flex gap-2">
-            <button onclick="exportData()" class="p-2.5 rounded-full bg-white text-stone-600 hover:bg-stone-100 shadow-sm border border-stone-100 transition-all active:scale-95" aria-label="Export Data">
+            <input type="file" id="importFile" accept=".json" class="hidden" onchange="importData(event)">
+            <button onclick="document.getElementById('importFile').click()" class="p-2.5 rounded-full bg-white text-stone-600 hover:bg-stone-100 shadow-sm border border-stone-100 transition-all active:scale-95" aria-label="Import Data" title="Restore Data">
+                <i data-lucide="upload" class="w-4 h-4"></i>
+            </button>
+            <button onclick="exportData()" class="p-2.5 rounded-full bg-white text-stone-600 hover:bg-stone-100 shadow-sm border border-stone-100 transition-all active:scale-95" aria-label="Export Data" title="Backup Data">
                 <i data-lucide="download" class="w-4 h-4"></i>
             </button>
             <button onclick="openGoalModal()" class="flex items-center gap-1.5 px-4 py-2 bg-stone-900 hover:bg-stone-800 text-white rounded-full text-xs font-bold shadow-md shadow-stone-900/10 transition-all active:scale-95">
@@ -72,8 +71,9 @@
                 <button onclick="filterGoals('all')" id="filter-all" class="px-5 py-2 rounded-full text-xs font-bold bg-stone-900 text-white transition-all shadow-sm">Everything</button>
                 <button onclick="filterGoals('short')" id="filter-short" class="px-5 py-2 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 transition-all hover:bg-stone-50">Short-term</button>
                 <button onclick="filterGoals('long')" id="filter-long" class="px-5 py-2 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 transition-all hover:bg-stone-50">Long-term</button>
+                <button onclick="filterGoals('completed')" id="filter-completed" class="px-5 py-2 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 transition-all hover:bg-stone-50">Achieved</button>
             </div>
-            <div id="goalsGrid" class="masonry-grid w-full"></div>
+            <div id="goalsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full"></div>
         </div>
 
         <div id="detailView" class="hidden space-y-8 animate-fade-in max-w-3xl mx-auto">
@@ -138,7 +138,7 @@
                     </div>
                     
                     <div class="flex gap-2">
-                        <input type="number" id="fundAmountInput" placeholder="Amount" class="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-stone-400">
+                        <input type="number" id="fundAmountInput" placeholder="Amount (LKR)" class="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-stone-400">
                         <button onclick="transactFunds('add')" class="px-4 py-2.5 bg-stone-900 text-white font-bold text-xs rounded-xl active:scale-95">Deposit</button>
                         <button onclick="transactFunds('sub')" class="px-4 py-2.5 bg-stone-100 text-stone-600 border border-stone-200 font-bold text-xs rounded-xl active:scale-95">Draw</button>
                     </div>
@@ -151,7 +151,7 @@
                     </div>
                 </div>
 
-                <div class="p-6 bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] transition-all">
+                <div id="actionSection" class="p-6 bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] transition-all">
                     <div class="flex justify-between items-center cursor-pointer select-none" onclick="toggleSection('actions')">
                         <h3 class="text-sm font-bold tracking-tight text-stone-900 flex items-center gap-2">
                             <div class="p-1.5 bg-blue-100 text-blue-600 rounded-lg"><i data-lucide="list-todo" class="w-4 h-4"></i></div> Action Steps
@@ -190,10 +190,10 @@
             
             <div class="pt-8 pb-12 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <button id="completeDreamBtn" class="px-8 py-3.5 bg-gradient-to-r from-stone-900 to-stone-800 text-white text-sm font-bold rounded-full shadow-xl shadow-stone-900/20 hover:scale-105 transition-all active:scale-95 flex items-center gap-2">
-                    <i data-lucide="sparkles" id="completeIcon" class="w-4 h-4"></i> <span id="completeBtnText">Mark Dream Realized</span>
+                    <i data-lucide="sparkles" id="completeIcon" class="w-4 h-4"></i> <span id="completeBtnText">Mark Dream Achieved</span>
                 </button>
                 <button onclick="deleteCurrentGoal()" class="text-xs font-bold text-red-500/80 hover:text-red-500 flex items-center gap-1.5 transition-all px-4 py-2 rounded-full hover:bg-red-50">
-                    <i data-lucide="trash-2" class="w-4 h-4"></i> Delete Dream
+                    <i data-lucide="trash-2" class="w-4 h-4"></i> Delete Goal
                 </button>
             </div>
         </div>
@@ -253,7 +253,7 @@
                             <p class="text-sm font-bold text-stone-900">Daily Rituals map</p>
                             <p class="text-[10px] text-stone-500 font-medium">Track habits consistently</p>
                         </div>
-                        <input type="checkbox" id="hasConsistency" checked class="w-5 h-5 accent-stone-900">
+                        <input type="checkbox" id="hasConsistency" class="w-5 h-5 accent-stone-900">
                     </div>
 
                     <div class="flex justify-between items-center bg-stone-50 p-4 rounded-2xl border border-stone-100">
@@ -265,8 +265,8 @@
                     </div>
                     
                     <div id="financeFields" class="grid grid-cols-2 gap-4 hidden bg-stone-50 p-4 rounded-2xl border border-stone-100">
-                        <div class="space-y-1"><label class="text-xs font-bold text-stone-500">Target Goal</label><input type="number" id="financeTarget" value="0" class="w-full bg-white border border-stone-200 rounded-xl p-3 text-sm focus:outline-none focus:border-stone-400"></div>
-                        <div class="space-y-1"><label class="text-xs font-bold text-stone-500">Already Saved</label><input type="number" id="financeSaved" value="0" class="w-full bg-white border border-stone-200 rounded-xl p-3 text-sm focus:outline-none focus:border-stone-400"></div>
+                        <div class="space-y-1"><label class="text-xs font-bold text-stone-500">Target Goal (LKR)</label><input type="number" id="financeTarget" value="0" class="w-full bg-white border border-stone-200 rounded-xl p-3 text-sm focus:outline-none focus:border-stone-400"></div>
+                        <div class="space-y-1"><label class="text-xs font-bold text-stone-500">Already Saved (LKR)</label><input type="number" id="financeSaved" value="0" class="w-full bg-white border border-stone-200 rounded-xl p-3 text-sm focus:outline-none focus:border-stone-400"></div>
                     </div>
                 </div>
 
@@ -300,7 +300,7 @@
                 <i data-lucide="party-popper" class="w-8 h-8"></i>
             </div>
             <div>
-                <h2 class="text-2xl font-extrabold text-stone-900">Dream Realized!</h2>
+                <h2 class="text-2xl font-extrabold text-stone-900">Dream Achieved!</h2>
                 <p class="text-sm text-stone-500 font-medium mt-1">You did it. Log your final thoughts.</p>
             </div>
             <textarea id="finalJournalText" rows="3" placeholder="How does it feel? What did you learn?" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-4 text-sm focus:outline-none focus:border-stone-400 resize-none"></textarea>
@@ -439,7 +439,7 @@
                     habits: g.habits || [], 
                     image: g.image || null,
                     gradient: g.gradient || 'from-stone-800 to-stone-600',
-                    hasConsistency: g.hasConsistency !== undefined ? g.hasConsistency : true,
+                    hasConsistency: g.hasConsistency !== undefined ? g.hasConsistency : false, // Defaulted to false for Milestone capability
                     createdAt: g.createdAt || Date.now(), 
                     financeHistory: g.financeHistory || [],
                     status: g.status || 'active'
@@ -544,6 +544,18 @@
             selectGradient('from-stone-800 to-stone-600', document.querySelector('#gradientPicker button'));
             toggleFinanceFields(false);
 
+            // Establish Min and Max Date rules for Date Picker explicitly
+            const deadlineInput = document.getElementById("goalDeadline");
+            const today = new Date();
+            const localMinDate = new Date(today.getTime() - (today.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+            
+            const maxDateObj = new Date(today);
+            maxDateObj.setFullYear(maxDateObj.getFullYear() + 50);
+            const localMaxDate = new Date(maxDateObj.getTime() - (maxDateObj.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+            
+            deadlineInput.min = localMinDate;
+            deadlineInput.max = localMaxDate;
+
             if (goalId) {
                 const goal = goals.find(g => g.id === goalId);
                 if (goal) {
@@ -589,37 +601,56 @@
         function renderDashboard() {
             const grid = document.getElementById("goalsGrid");
             grid.innerHTML = "";
-            const filtered = goals.filter(g => currentFilter === 'all' || g.type === currentFilter);
+            
+            // Filter
+            let filtered = goals.filter(g => {
+                if (currentFilter === 'completed') return g.status === 'completed';
+                if (g.status === 'completed') return false; // Hide achieved goals from active tabs
+                if (currentFilter === 'all') return true;
+                return g.type === currentFilter;
+            });
+
+            // STRICT SORTING: Ascending order based on closest deadline (days remaining)
+            filtered.sort((a, b) => {
+                const dateA = a.deadline ? new Date(a.deadline).getTime() : Infinity;
+                const dateB = b.deadline ? new Date(b.deadline).getTime() : Infinity;
+                return dateA - dateB; // Closest date naturally sorts first
+            });
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-2 md:col-span-3 lg:col-span-4 py-20 flex flex-col items-center text-stone-400 space-y-3 w-full"><i data-lucide="sparkles" class="w-8 h-8 opacity-50"></i><p class="text-sm font-semibold tracking-wide">Your Goal board is empty</p></div>`;
+                grid.innerHTML = `<div class="col-span-2 md:col-span-3 lg:col-span-4 py-20 flex flex-col items-center text-stone-400 space-y-3 w-full"><i data-lucide="sparkles" class="w-8 h-8 opacity-50"></i><p class="text-sm font-semibold tracking-wide">Nothing in this view right now</p></div>`;
                 safeCreateIcons(); return;
             }
 
             filtered.forEach((goal) => {
                 const pct = calculateProgress(goal);
                 const card = document.createElement("div");
-                card.className = `masonry-item bg-white rounded-3xl overflow-hidden border border-stone-100 shadow-[0_2px_15px_rgb(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] cursor-pointer transition-all duration-300 group flex flex-col ${goal.status === 'completed' ? 'opacity-80' : ''}`;
+                // Using standard grid layout constraints instead of masonry
+                card.className = `bg-white rounded-3xl overflow-hidden border border-stone-100 shadow-[0_2px_15px_rgb(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] cursor-pointer transition-all duration-300 group flex flex-col h-full ${goal.status === 'completed' ? 'opacity-80' : ''}`;
                 card.onclick = () => openGoalDetail(goal.id);
 
                 let imgHtml = goal.image 
-                    ? `<div class="w-full aspect-[4/3] bg-stone-100 overflow-hidden relative"><img src="${goal.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"></div>` 
-                    : `<div class="w-full h-32 bg-gradient-to-br ${goal.gradient || 'from-stone-800 to-stone-600'}"></div>`;
+                    ? `<div class="w-full aspect-[4/3] bg-stone-100 overflow-hidden relative shrink-0"><img src="${goal.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"></div>` 
+                    : `<div class="w-full h-32 bg-gradient-to-br shrink-0 ${goal.gradient || 'from-stone-800 to-stone-600'}"></div>`;
 
                 let badge = goal.status === 'completed' 
-                    ? `<span class="bg-stone-900 text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Realized</span>`
+                    ? `<span class="bg-stone-900 text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Achieved</span>`
                     : `<span class="flex items-center gap-1"><i data-lucide="flag" class="w-3.5 h-3.5"></i> ${getDaysRemaining(goal.deadline)}d left</span>`;
 
                 card.innerHTML = `
                     ${imgHtml}
-                    <div class="p-5 flex flex-col gap-3">
-                        <h3 class="text-base font-extrabold tracking-tight text-stone-900 leading-snug">${escapeHtml(goal.title)}</h3>
-                        <div class="flex items-center justify-between text-xs font-semibold text-stone-500">
-                            ${badge}
-                            <span class="text-stone-900">${pct}%</span>
+                    <div class="p-4 sm:p-5 flex flex-col gap-3 flex-1 justify-between">
+                        <div>
+                            <h3 class="text-base font-extrabold tracking-tight text-stone-900 leading-snug">${escapeHtml(goal.title)}</h3>
                         </div>
-                        <div class="w-full bg-stone-100 h-1.5 rounded-full overflow-hidden">
-                            <div class="h-full ${goal.status === 'completed' ? 'bg-emerald-500' : 'bg-stone-900'} rounded-full transition-all" style="width: ${pct}%"></div>
+                        <div class="space-y-2 mt-auto">
+                            <div class="flex items-center justify-between text-xs font-semibold text-stone-500">
+                                ${badge}
+                                <span class="text-stone-900">${pct}%</span>
+                            </div>
+                            <div class="w-full bg-stone-100 h-1.5 rounded-full overflow-hidden">
+                                <div class="h-full ${goal.status === 'completed' ? 'bg-emerald-500' : 'bg-stone-900'} rounded-full transition-all" style="width: ${pct}%"></div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -667,7 +698,7 @@
             const goal = goals.find(g => g.id === id);
             if (!goal) return closeGoalDetail();
 
-            // Setup Aesthetic Hero Matching Exactly to Dashboard logic
+            // Setup Aesthetic Hero
             const hero = document.getElementById("detailHero");
             const heroBg = document.getElementById("detailHeroBg");
             if (goal.image) { 
@@ -678,7 +709,7 @@
                 hero.className = `relative rounded-[2rem] overflow-hidden bg-gradient-to-br ${goal.gradient || 'from-stone-800 to-stone-600'} shadow-sm border border-stone-200/60 aspect-video max-h-[40vh] flex items-end`; 
             }
 
-            let completedBadge = goal.status === 'completed' ? `<span class="ml-3 px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-lg uppercase tracking-wider">Realized</span>` : '';
+            let completedBadge = goal.status === 'completed' ? `<span class="ml-3 px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-lg uppercase tracking-wider">Achieved</span>` : '';
 
             let displayDate = "No date";
             if(goal.deadline && !isNaN(new Date(goal.deadline).getTime())) {
@@ -725,9 +756,17 @@
                 if (sortedHist.length === 0) led.innerHTML = `<p class="text-xs text-stone-400 py-1">No transactions.</p>`;
                 sortedHist.forEach(tx => {
                     const isAdd = tx.type === 'add';
-                    led.innerHTML += `<div class="flex justify-between text-xs py-1 border-b border-stone-50 last:border-0"><span class="text-stone-500">${new Date(tx.date).toLocaleDateString()}</span><span class="font-bold ${isAdd ? 'text-emerald-500' : 'text-stone-600'}">${isAdd ? '+' : '-'}LKR ${tx.amount}</span></div>`;
+                    led.innerHTML += `<div class="flex justify-between text-xs py-1 border-b border-stone-50 last:border-0"><span class="text-stone-500">${new Date(tx.date).toLocaleDateString()}</span><span class="font-bold ${isAdd ? 'text-emerald-500' : 'text-stone-600'}">${isAdd ? '+' : '-'}LKR ${tx.amount.toLocaleString()}</span></div>`;
                 });
             } else { finSec.classList.add("hidden"); }
+
+            // Dynamic layout adjustment for purely Milestone-focused goals
+            const actSec = document.getElementById("actionSection");
+            if (goal.hasConsistency && goal.hasFinance) {
+                actSec.classList.remove("md:col-span-2");
+            } else {
+                actSec.classList.add("md:col-span-2");
+            }
 
             // Tasks
             const tasksContainer = document.getElementById("tasksContainer");
@@ -786,7 +825,7 @@
                 cBtn.onclick = revertDream;
             } else {
                 cIcon.setAttribute('data-lucide', 'sparkles');
-                cText.innerText = 'Mark Dream Realized';
+                cText.innerText = 'Mark Dream Achieved';
                 cBtn.className = "px-8 py-3.5 bg-gradient-to-r from-stone-900 to-stone-800 text-white text-sm font-bold rounded-full shadow-xl shadow-stone-900/20 hover:scale-105 transition-all active:scale-95 flex items-center gap-2";
                 cBtn.onclick = () => openModal('completeModal');
             }
@@ -884,7 +923,6 @@
         }
 
         function changeCalendarOffset(weeks) {
-            // Prevent going into the future unnecessarily
             if (calendarOffsetWeeks >= 0 && weeks > 0) return; 
             calendarOffsetWeeks += weeks;
             const goal = goals.find(g => g.id === activeGoalId);
@@ -1040,18 +1078,34 @@
         async function handleCreateGoal(e) {
             e.preventDefault();
             try {
-                const hasFin = document.getElementById("hasFinance").checked;
-                let inputDate = document.getElementById("goalDeadline").value;
-                if (!inputDate) {
-                    const d = new Date(); d.setMonth(d.getMonth() + 1);
-                    inputDate = d.toISOString().split('T')[0];
+                // Strict Frontend Validation Check
+                const inputDateStr = document.getElementById("goalDeadline").value;
+                if (!inputDateStr) return showToast("A target date is required.", "error");
+
+                const parts = inputDateStr.split('-');
+                const selectedDate = new Date(parts[0], parts[1] - 1, parts[2]); 
+                
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                
+                const futureLimit = new Date(today);
+                futureLimit.setFullYear(futureLimit.getFullYear() + 50);
+                futureLimit.setHours(23,59,59,999);
+
+                if (selectedDate < today) {
+                    return showToast("Target date must be in the future.", "error");
+                }
+                if (selectedDate > futureLimit) {
+                    return showToast("Target date cannot exceed 50 years from today.", "error");
                 }
 
+                const hasFin = document.getElementById("hasFinance").checked;
+                
                 if (editingGoalId) {
                     const goal = goals.find(g => g.id === editingGoalId);
                     goal.title = document.getElementById("goalTitle").value;
                     goal.type = document.getElementById("goalType").value;
-                    goal.deadline = inputDate;
+                    goal.deadline = inputDateStr;
                     goal.image = pendingImageDataUrl;
                     goal.gradient = selectedGradientFallback;
                     goal.hasConsistency = document.getElementById("hasConsistency").checked;
@@ -1066,7 +1120,7 @@
                         id: 'goal_' + Date.now(),
                         title: document.getElementById("goalTitle").value || "Untitled Goal",
                         type: document.getElementById("goalType").value || "short",
-                        deadline: inputDate,
+                        deadline: inputDateStr,
                         image: pendingImageDataUrl,
                         gradient: selectedGradientFallback,
                         hasConsistency: document.getElementById("hasConsistency").checked,
@@ -1098,12 +1152,12 @@
                 const goal = goals.find(g => g.id === activeGoalId);
                 goal.status = 'completed';
                 if(!goal.logs) goal.logs = [];
-                if (txt) goal.logs.push({ id: 'log_' + Date.now(), text: `[DREAM REALIZED]: ${txt}`, timestamp: Date.now() });
+                if (txt) goal.logs.push({ id: 'log_' + Date.now(), text: `[DREAM ACHIEVED]: ${txt}`, timestamp: Date.now() });
                 await dbPut(goal);
                 closeModal('completeModal');
                 document.getElementById("finalJournalText").value = "";
                 await reloadData();
-                showToast("Dream marked realized! ✨");
+                showToast("Dream marked achieved! ✨");
             } catch(e) { showToast("Error finalizing dream", "error"); }
         }
 
@@ -1119,13 +1173,13 @@
         }
 
         async function deleteCurrentGoal() {
-            if (!confirm("Delete this Goal completely? This cannot be undone.")) return;
+            if (!confirm("Delete this goal completely? This cannot be undone.")) return;
             try {
                 await dbDelete(activeGoalId); 
                 closeGoalDetail(); 
                 await reloadData();
                 showToast("Goal deleted");
-            } catch(e) { showToast("Error deleting Goal", "error"); }
+            } catch(e) { showToast("Error deleting goal", "error"); }
         }
 
         async function transactFunds(type) {
@@ -1145,7 +1199,7 @@
                 await dbPut(goal); 
                 amtInput.value = ""; 
                 await reloadData();
-                showToast(`LKR ${amt} ${type==='add'?'deposited':'drawn'} successfully`);
+                showToast(`LKR ${amt.toLocaleString()} ${type==='add'?'deposited':'drawn'} successfully`);
             } catch(e) { showToast("Transaction failed", "error"); }
         }
 
@@ -1191,7 +1245,18 @@
         }
 
         // Utils
-        function filterGoals(t) { currentFilter = t; ['all','short','long'].forEach(x => { const b = document.getElementById(`filter-${x}`); if(x===t){b.className="px-5 py-2 rounded-full text-xs font-bold bg-stone-900 text-white transition-all shadow-sm";}else{b.className="px-5 py-2 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 transition-all hover:bg-stone-50";} }); renderDashboard(); }
+        function filterGoals(t) { 
+            currentFilter = t; 
+            ['all','short','long','completed'].forEach(x => { 
+                const b = document.getElementById(`filter-${x}`); 
+                if(x===t){
+                    b.className="px-5 py-2 rounded-full text-xs font-bold bg-stone-900 text-white transition-all shadow-sm";
+                } else {
+                    b.className="px-5 py-2 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 transition-all hover:bg-stone-50";
+                } 
+            }); 
+            renderDashboard(); 
+        }
         function openModal(id) { document.getElementById(id).classList.remove("hidden"); }
         function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
         function toggleFinanceFields(show) { document.getElementById("financeFields").classList.toggle("hidden", !show); }
@@ -1205,6 +1270,8 @@
             if(!str) return "";
             return str.toString().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); 
         }
+
+        // Data Management Export / Import
         function exportData() { 
             try {
                 const a = document.createElement('a'); 
@@ -1213,6 +1280,27 @@
                 a.click(); 
                 showToast("Backup exported successfully");
             } catch(e) { showToast("Failed to export backup", "error"); }
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const importedGoals = JSON.parse(e.target.result);
+                    if (!Array.isArray(importedGoals)) throw new Error("Invalid data format");
+                    for (const g of importedGoals) {
+                        await dbPut(g);
+                    }
+                    await reloadData();
+                    showToast("Data imported successfully! ✨");
+                } catch(err) {
+                    showToast("Failed to parse import file.", "error");
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ""; // Reset the input so the exact same file can trigger change again
         }
     </script>
 </body>
