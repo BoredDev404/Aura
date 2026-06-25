@@ -9,6 +9,13 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         
+        /* Core viewport fix to prevent any horizontal swiping/overflow */
+        html, body {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             padding-top: env(safe-area-inset-top, 0px);
@@ -66,17 +73,17 @@
     </header>
 
     <main class="flex-1 px-4 py-6 overflow-y-auto w-full max-w-6xl mx-auto pb-32">
-        <div id="dashboardView" class="space-y-6 animate-fade-in">
+        <div id="dashboardView" class="space-y-6 animate-fade-in w-full">
             <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
-                <button onclick="filterGoals('all')" id="filter-all" class="px-5 py-2 rounded-full text-xs font-bold bg-stone-900 text-white transition-all shadow-sm">Everything</button>
-                <button onclick="filterGoals('short')" id="filter-short" class="px-5 py-2 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 transition-all hover:bg-stone-50">Short-term</button>
-                <button onclick="filterGoals('long')" id="filter-long" class="px-5 py-2 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 transition-all hover:bg-stone-50">Long-term</button>
-                <button onclick="filterGoals('completed')" id="filter-completed" class="px-5 py-2 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 transition-all hover:bg-stone-50">Achieved</button>
+                <button onclick="filterGoals('all')" id="filter-all" class="shrink-0 px-5 py-2 rounded-full text-xs font-bold bg-stone-900 text-white transition-all shadow-sm">Everything</button>
+                <button onclick="filterGoals('short')" id="filter-short" class="shrink-0 px-5 py-2 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 transition-all hover:bg-stone-50">Short-term</button>
+                <button onclick="filterGoals('long')" id="filter-long" class="shrink-0 px-5 py-2 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 transition-all hover:bg-stone-50">Long-term</button>
+                <button onclick="filterGoals('completed')" id="filter-completed" class="shrink-0 px-5 py-2 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 transition-all hover:bg-stone-50">Achieved</button>
             </div>
-            <div id="goalsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full"></div>
+            <div id="goalsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 w-full"></div>
         </div>
 
-        <div id="detailView" class="hidden space-y-8 animate-fade-in max-w-3xl mx-auto">
+        <div id="detailView" class="hidden space-y-8 animate-fade-in max-w-3xl mx-auto w-full">
             <button onclick="closeGoalDetail()" class="flex items-center gap-2 text-stone-500 hover:text-stone-900 transition-all text-sm font-bold bg-white px-4 py-2 rounded-full border border-stone-200 shadow-sm w-max active:scale-95">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Board
             </button>
@@ -84,18 +91,18 @@
             <div id="detailHero" class="relative rounded-[2rem] overflow-hidden bg-stone-100 shadow-sm border border-stone-200/60 aspect-video max-h-[40vh] flex items-end">
                 <div id="detailHeroBg" class="absolute inset-0 z-0 pointer-events-none"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10 pointer-events-none"></div>
-                <div class="relative z-20 p-6 md:p-10 w-full flex justify-between items-end" id="detailHeroContent"></div>
+                <div class="relative z-20 p-5 md:p-10 w-full flex justify-between items-end" id="detailHeroContent"></div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
                 
-                <div id="habitSection" class="p-6 bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] transition-all hidden md:col-span-2">
+                <div id="habitSection" class="p-5 sm:p-6 bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] transition-all hidden md:col-span-2 w-full">
                     <div class="flex justify-between items-center cursor-pointer select-none" onclick="toggleSection('timeline')">
                         <h3 class="text-sm font-bold tracking-tight text-stone-900 flex items-center gap-2">
                             <div class="p-1.5 bg-orange-100 text-orange-600 rounded-lg"><i data-lucide="sun" class="w-4 h-4"></i></div>
                             Consistency Timeline
                         </h3>
-                        <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-3 sm:gap-4">
                             <div class="flex items-center gap-2" onclick="event.stopPropagation()">
                                 <button id="lockToggleBtn" onclick="toggleMapLock()" class="p-2 rounded-xl bg-stone-50 text-stone-500 border border-stone-200 hover:bg-stone-100 transition-all active:scale-95" title="Lock/Unlock Editing">
                                     <i data-lucide="lock" id="lockIcon" class="w-4 h-4"></i>
@@ -111,7 +118,7 @@
                     <div id="timelineContent" class="space-y-5 mt-5">
                         <div id="calendarScrollContainer" class="w-full select-none"></div>
 
-                        <div id="dayEditor" class="bg-stone-50 p-5 rounded-2xl border border-stone-200 space-y-4 transition-all">
+                        <div id="dayEditor" class="bg-stone-50 p-4 sm:p-5 rounded-2xl border border-stone-200 space-y-4 transition-all w-full">
                             <div class="flex justify-between items-center border-b border-stone-200 pb-3">
                                 <h4 class="text-sm font-bold text-stone-800 flex items-center gap-2" id="dayEditorTitle">
                                     <i data-lucide="calendar" class="w-4 h-4 text-stone-500"></i> Select a date
@@ -125,22 +132,24 @@
                     </div>
                 </div>
 
-                <div id="detailFinancial" class="p-6 bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] space-y-4 hidden">
+                <div id="detailFinancial" class="p-5 sm:p-6 bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] space-y-4 hidden w-full">
                     <h3 class="text-sm font-bold tracking-tight text-stone-900 flex items-center gap-2">
                         <div class="p-1.5 bg-emerald-100 text-emerald-600 rounded-lg"><i data-lucide="coins" class="w-4 h-4"></i></div> Financial Cache
                     </h3>
                     <div class="flex justify-between items-end mb-2">
-                        <h4 class="text-2xl font-extrabold text-stone-900" id="financialSavedDisplay"></h4>
-                        <span id="financialPercent" class="text-xs font-bold px-2.5 py-1 bg-stone-100 text-stone-600 rounded-lg"></span>
+                        <h4 class="text-2xl font-extrabold text-stone-900 truncate pr-2" id="financialSavedDisplay"></h4>
+                        <span id="financialPercent" class="text-xs font-bold px-2.5 py-1 bg-stone-100 text-stone-600 rounded-lg shrink-0"></span>
                     </div>
                     <div class="w-full bg-stone-100 h-3 rounded-full overflow-hidden mb-4">
                         <div id="financialBar" class="bg-emerald-500 h-full rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
                     </div>
                     
-                    <div class="flex gap-2">
-                        <input type="number" id="fundAmountInput" placeholder="Amount (LKR)" class="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-stone-400">
-                        <button onclick="transactFunds('add')" class="px-4 py-2.5 bg-stone-900 text-white font-bold text-xs rounded-xl active:scale-95">Deposit</button>
-                        <button onclick="transactFunds('sub')" class="px-4 py-2.5 bg-stone-100 text-stone-600 border border-stone-200 font-bold text-xs rounded-xl active:scale-95">Draw</button>
+                    <div class="flex flex-col gap-3">
+                        <input type="number" id="fundAmountInput" placeholder="Amount (LKR)" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-stone-400">
+                        <div class="flex gap-2">
+                            <button onclick="transactFunds('add')" class="flex-1 px-4 py-3 bg-stone-900 text-white font-bold text-xs rounded-xl active:scale-95 transition-all">Deposit</button>
+                            <button onclick="transactFunds('sub')" class="flex-1 px-4 py-3 bg-stone-100 text-stone-600 border border-stone-200 font-bold text-xs rounded-xl hover:bg-stone-200 active:scale-95 transition-all">Draw</button>
+                        </div>
                     </div>
 
                     <div class="pt-3 border-t border-stone-100">
@@ -151,7 +160,7 @@
                     </div>
                 </div>
 
-                <div id="actionSection" class="p-6 bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] transition-all">
+                <div id="actionSection" class="p-5 sm:p-6 bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] transition-all w-full">
                     <div class="flex justify-between items-center cursor-pointer select-none" onclick="toggleSection('actions')">
                         <h3 class="text-sm font-bold tracking-tight text-stone-900 flex items-center gap-2">
                             <div class="p-1.5 bg-blue-100 text-blue-600 rounded-lg"><i data-lucide="list-todo" class="w-4 h-4"></i></div> Action Steps
@@ -159,16 +168,16 @@
                         <div class="text-stone-400 transition-transform duration-300 hover:text-stone-600" id="actionsChevron"><i data-lucide="chevron-down" class="w-5 h-5"></i></div>
                     </div>
                     
-                    <div id="actionsContent" class="space-y-5 mt-5">
+                    <div id="actionsContent" class="space-y-4 mt-5">
                         <div class="flex gap-2">
-                            <input type="text" id="newTaskTitle" placeholder="Next milestone..." class="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-stone-400">
-                            <button onclick="addTask()" class="px-4 py-2 bg-stone-900 text-white font-bold text-xs rounded-xl active:scale-95">Add</button>
+                            <input type="text" id="newTaskTitle" placeholder="Next milestone..." class="flex-1 min-w-0 bg-stone-50 border border-stone-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-stone-400">
+                            <button onclick="addTask()" class="px-4 py-2.5 bg-stone-900 text-white font-bold text-xs rounded-xl active:scale-95 shrink-0">Add</button>
                         </div>
-                        <div class="space-y-2 max-h-64 overflow-y-auto no-scrollbar" id="tasksContainer"></div>
+                        <div class="space-y-2 max-h-64 overflow-y-auto no-scrollbar w-full" id="tasksContainer"></div>
                     </div>
                 </div>
 
-                <div class="md:col-span-2 p-6 bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] transition-all">
+                <div class="md:col-span-2 p-5 sm:p-6 bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] transition-all w-full">
                     <div class="flex justify-between items-center cursor-pointer select-none" onclick="toggleSection('journal')">
                         <h3 class="text-sm font-bold tracking-tight text-stone-900 flex items-center gap-2">
                             <div class="p-1.5 bg-purple-100 text-purple-600 rounded-lg"><i data-lucide="book-heart" class="w-4 h-4"></i></div> Journal & Thoughts
@@ -180,50 +189,50 @@
                         <div class="space-y-3">
                             <textarea id="newJournalText" rows="3" placeholder="Log alignments, progress notes, or emotional state updates..." class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-4 text-sm focus:outline-none focus:border-stone-400 transition-all resize-none"></textarea>
                             <div class="flex justify-end">
-                                <button onclick="addJournalEntry()" class="px-6 py-2.5 bg-stone-900 text-white font-bold text-sm rounded-xl active:scale-95">Save Entry</button>
+                                <button onclick="addJournalEntry()" class="px-6 py-2.5 bg-stone-900 text-white font-bold text-sm rounded-xl active:scale-95 w-full sm:w-auto">Save Entry</button>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4" id="journalContainer"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 w-full" id="journalContainer"></div>
                     </div>
                 </div>
             </div>
             
-            <div class="pt-8 pb-12 flex flex-col sm:flex-row items-center justify-center gap-4">
-                <button id="completeDreamBtn" class="px-8 py-3.5 bg-gradient-to-r from-stone-900 to-stone-800 text-white text-sm font-bold rounded-full shadow-xl shadow-stone-900/20 hover:scale-105 transition-all active:scale-95 flex items-center gap-2">
+            <div class="pt-8 pb-12 flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
+                <button id="completeDreamBtn" class="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-stone-900 to-stone-800 text-white text-sm font-bold rounded-full shadow-xl shadow-stone-900/20 hover:scale-105 transition-all active:scale-95 flex items-center justify-center gap-2">
                     <i data-lucide="sparkles" id="completeIcon" class="w-4 h-4"></i> <span id="completeBtnText">Mark Dream Achieved</span>
                 </button>
-                <button onclick="deleteCurrentGoal()" class="text-xs font-bold text-red-500/80 hover:text-red-500 flex items-center gap-1.5 transition-all px-4 py-2 rounded-full hover:bg-red-50">
+                <button onclick="deleteCurrentGoal()" class="w-full sm:w-auto justify-center text-xs font-bold text-red-500/80 hover:text-red-500 flex items-center gap-1.5 transition-all px-4 py-3 sm:py-2 rounded-full hover:bg-red-50">
                     <i data-lucide="trash-2" class="w-4 h-4"></i> Delete Goal
                 </button>
             </div>
         </div>
     </main>
 
-    <div id="goalModal" class="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden transition-opacity">
-        <div class="bg-white w-full sm:max-w-md rounded-t-[2rem] sm:rounded-3xl p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto shadow-2xl">
+    <div id="goalModal" class="fixed inset-0 z-50 bg-stone-900/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden transition-opacity overflow-x-hidden">
+        <div class="bg-white w-full max-w-[100vw] sm:max-w-md rounded-t-[2rem] sm:rounded-3xl p-5 sm:p-8 space-y-5 sm:space-y-6 max-h-[90vh] overflow-y-auto overflow-x-hidden shadow-2xl flex flex-col">
             <div class="flex justify-between items-center">
                 <h2 id="goalModalTitle" class="text-xl font-extrabold text-stone-900">New Goal</h2>
-                <button type="button" onclick="closeModal('goalModal')" class="p-2 bg-stone-100 rounded-full text-stone-500 hover:bg-stone-200 transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
+                <button type="button" onclick="closeModal('goalModal')" class="p-2 bg-stone-100 rounded-full text-stone-500 hover:bg-stone-200 transition-colors shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
-            <form id="goalForm" onsubmit="handleCreateGoal(event)" class="space-y-5">
+            <form id="goalForm" onsubmit="handleCreateGoal(event)" class="space-y-4 sm:space-y-5">
                 <div class="space-y-2">
                     <label class="text-xs font-bold text-stone-500 uppercase tracking-wider">Aesthetic Image</label>
-                    <div class="relative border-2 border-dashed border-stone-200 rounded-2xl bg-stone-50 hover:bg-stone-100 transition-all group overflow-hidden h-32 flex flex-col items-center justify-center cursor-pointer">
+                    <div class="relative border-2 border-dashed border-stone-200 rounded-2xl bg-stone-50 hover:bg-stone-100 transition-all group overflow-hidden h-28 sm:h-32 flex flex-col items-center justify-center cursor-pointer">
                         <input type="file" accept="image/*" onchange="previewImage(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
-                        <div id="imagePreviewContainer" class="flex flex-col items-center gap-2 text-stone-400 group-hover:text-stone-600 relative z-10 pointer-events-none">
+                        <div id="imagePreviewContainer" class="flex flex-col items-center gap-2 text-stone-400 group-hover:text-stone-600 relative z-10 pointer-events-none px-4 text-center">
                             <i data-lucide="image-plus" class="w-6 h-6"></i>
                             <span class="text-xs font-semibold" id="imageUploadText">Tap to select image</span>
                         </div>
                         <img id="imagePreview" class="absolute inset-0 w-full h-full object-cover hidden z-10 pointer-events-none">
                     </div>
-                    <div class="pt-2">
+                    <div class="pt-1 sm:pt-2">
                         <p class="text-[10px] font-bold text-stone-400 uppercase mb-2">Or choose a gradient fallback</p>
-                        <div class="flex gap-2" id="gradientPicker">
-                            <button type="button" onclick="selectGradient('from-stone-800 to-stone-600', this)" class="w-8 h-8 rounded-full bg-gradient-to-br from-stone-800 to-stone-600 ring-2 ring-offset-2 ring-stone-900 ring-transparent transition-all"></button>
-                            <button type="button" onclick="selectGradient('from-orange-400 to-rose-400', this)" class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-rose-400 ring-2 ring-offset-2 ring-transparent hover:ring-stone-200 transition-all"></button>
-                            <button type="button" onclick="selectGradient('from-emerald-400 to-teal-500', this)" class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 ring-2 ring-offset-2 ring-transparent hover:ring-stone-200 transition-all"></button>
-                            <button type="button" onclick="selectGradient('from-blue-400 to-indigo-500', this)" class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 ring-2 ring-offset-2 ring-transparent hover:ring-stone-200 transition-all"></button>
-                            <button type="button" onclick="selectGradient('from-purple-400 to-fuchsia-400', this)" class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-fuchsia-400 ring-2 ring-offset-2 ring-transparent hover:ring-stone-200 transition-all"></button>
+                        <div class="flex gap-2 flex-wrap" id="gradientPicker">
+                            <button type="button" onclick="selectGradient('from-stone-800 to-stone-600', this)" class="w-8 h-8 rounded-full bg-gradient-to-br from-stone-800 to-stone-600 ring-2 ring-offset-2 ring-stone-900 ring-transparent transition-all shrink-0"></button>
+                            <button type="button" onclick="selectGradient('from-orange-400 to-rose-400', this)" class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-rose-400 ring-2 ring-offset-2 ring-transparent hover:ring-stone-200 transition-all shrink-0"></button>
+                            <button type="button" onclick="selectGradient('from-emerald-400 to-teal-500', this)" class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 ring-2 ring-offset-2 ring-transparent hover:ring-stone-200 transition-all shrink-0"></button>
+                            <button type="button" onclick="selectGradient('from-blue-400 to-indigo-500', this)" class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 ring-2 ring-offset-2 ring-transparent hover:ring-stone-200 transition-all shrink-0"></button>
+                            <button type="button" onclick="selectGradient('from-purple-400 to-fuchsia-400', this)" class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-fuchsia-400 ring-2 ring-offset-2 ring-transparent hover:ring-stone-200 transition-all shrink-0"></button>
                         </div>
                     </div>
                 </div>
@@ -233,7 +242,7 @@
                     <input type="text" id="goalTitle" required class="w-full bg-stone-50 border border-stone-200 rounded-xl p-3.5 text-sm focus:outline-none focus:border-stone-400 font-medium text-stone-900">
                 </div>
                 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-stone-500 uppercase tracking-wider">Timeline</label>
                         <select id="goalType" class="w-full bg-stone-50 border border-stone-200 rounded-xl p-3.5 text-sm focus:outline-none focus:border-stone-400 font-medium text-stone-900">
@@ -253,7 +262,7 @@
                             <p class="text-sm font-bold text-stone-900">Daily Rituals map</p>
                             <p class="text-[10px] text-stone-500 font-medium">Track habits consistently</p>
                         </div>
-                        <input type="checkbox" id="hasConsistency" class="w-5 h-5 accent-stone-900">
+                        <input type="checkbox" id="hasConsistency" class="w-5 h-5 accent-stone-900 shrink-0">
                     </div>
 
                     <div class="flex justify-between items-center bg-stone-50 p-4 rounded-2xl border border-stone-100">
@@ -261,10 +270,10 @@
                             <p class="text-sm font-bold text-stone-900">Requires Savings?</p>
                             <p class="text-[10px] text-stone-500 font-medium">Track a financial target</p>
                         </div>
-                        <input type="checkbox" id="hasFinance" onchange="toggleFinanceFields(this.checked)" class="w-5 h-5 accent-stone-900">
+                        <input type="checkbox" id="hasFinance" onchange="toggleFinanceFields(this.checked)" class="w-5 h-5 accent-stone-900 shrink-0">
                     </div>
                     
-                    <div id="financeFields" class="grid grid-cols-2 gap-4 hidden bg-stone-50 p-4 rounded-2xl border border-stone-100">
+                    <div id="financeFields" class="grid grid-cols-1 sm:grid-cols-2 gap-4 hidden bg-stone-50 p-4 rounded-2xl border border-stone-100">
                         <div class="space-y-1"><label class="text-xs font-bold text-stone-500">Target Goal (LKR)</label><input type="number" id="financeTarget" value="0" class="w-full bg-white border border-stone-200 rounded-xl p-3 text-sm focus:outline-none focus:border-stone-400"></div>
                         <div class="space-y-1"><label class="text-xs font-bold text-stone-500">Already Saved (LKR)</label><input type="number" id="financeSaved" value="0" class="w-full bg-white border border-stone-200 rounded-xl p-3 text-sm focus:outline-none focus:border-stone-400"></div>
                     </div>
@@ -275,16 +284,16 @@
         </div>
     </div>
 
-    <div id="manageHabitsModal" class="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden transition-opacity">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-5 shadow-2xl">
+    <div id="manageHabitsModal" class="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden transition-opacity overflow-x-hidden">
+        <div class="bg-white w-full max-w-[100vw] sm:max-w-sm rounded-3xl p-6 space-y-5 shadow-2xl">
             <div class="flex justify-between items-center border-b border-stone-100 pb-3">
                 <h2 class="text-lg font-bold text-stone-900">Manage Habits</h2>
                 <button onclick="closeModal('manageHabitsModal')" class="p-1.5 bg-stone-100 rounded-full text-stone-500 hover:bg-stone-200"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
             
             <div class="flex gap-2">
-                <input type="text" id="newHabitTitle" placeholder="Add a daily ritual..." class="flex-1 bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-stone-400">
-                <button onclick="addHabit()" class="px-4 py-2 bg-stone-900 text-white font-bold text-xs rounded-xl hover:bg-stone-800 transition-all active:scale-95">Add</button>
+                <input type="text" id="newHabitTitle" placeholder="Add a daily ritual..." class="flex-1 min-w-0 bg-stone-50 border border-stone-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-stone-400">
+                <button onclick="addHabit()" class="px-4 py-2 bg-stone-900 text-white font-bold text-xs rounded-xl hover:bg-stone-800 transition-all active:scale-95 shrink-0">Add</button>
             </div>
             
             <div class="space-y-2 max-h-60 overflow-y-auto no-scrollbar pt-2" id="manageHabitsList">
@@ -294,8 +303,8 @@
         </div>
     </div>
 
-    <div id="completeModal" class="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden transition-opacity">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-8 space-y-5 shadow-2xl text-center">
+    <div id="completeModal" class="fixed inset-0 z-50 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden transition-opacity overflow-x-hidden">
+        <div class="bg-white w-full max-w-[100vw] sm:max-w-sm rounded-3xl p-6 sm:p-8 space-y-5 shadow-2xl text-center">
             <div class="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto text-stone-900">
                 <i data-lucide="party-popper" class="w-8 h-8"></i>
             </div>
@@ -304,9 +313,9 @@
                 <p class="text-sm text-stone-500 font-medium mt-1">You did it. Log your final thoughts.</p>
             </div>
             <textarea id="finalJournalText" rows="3" placeholder="How does it feel? What did you learn?" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-4 text-sm focus:outline-none focus:border-stone-400 resize-none"></textarea>
-            <div class="flex gap-2">
-                <button onclick="closeModal('completeModal')" class="flex-1 py-3 bg-stone-100 text-stone-600 font-bold text-sm rounded-xl">Cancel</button>
-                <button onclick="finalizeDream()" class="flex-1 py-3 bg-stone-900 text-white font-bold text-sm rounded-xl">Seal Dream</button>
+            <div class="flex flex-col sm:flex-row gap-2">
+                <button onclick="closeModal('completeModal')" class="flex-1 py-3 bg-stone-100 text-stone-600 font-bold text-sm rounded-xl transition-all">Cancel</button>
+                <button onclick="finalizeDream()" class="flex-1 py-3 bg-stone-900 text-white font-bold text-sm rounded-xl transition-all">Seal Dream</button>
             </div>
         </div>
     </div>
@@ -439,7 +448,7 @@
                     habits: g.habits || [], 
                     image: g.image || null,
                     gradient: g.gradient || 'from-stone-800 to-stone-600',
-                    hasConsistency: g.hasConsistency !== undefined ? g.hasConsistency : false, // Defaulted to false for Milestone capability
+                    hasConsistency: g.hasConsistency !== undefined ? g.hasConsistency : false,
                     createdAt: g.createdAt || Date.now(), 
                     financeHistory: g.financeHistory || [],
                     status: g.status || 'active'
@@ -605,7 +614,7 @@
             // Filter
             let filtered = goals.filter(g => {
                 if (currentFilter === 'completed') return g.status === 'completed';
-                if (g.status === 'completed') return false; // Hide achieved goals from active tabs
+                if (g.status === 'completed') return false; 
                 if (currentFilter === 'all') return true;
                 return g.type === currentFilter;
             });
@@ -614,41 +623,40 @@
             filtered.sort((a, b) => {
                 const dateA = a.deadline ? new Date(a.deadline).getTime() : Infinity;
                 const dateB = b.deadline ? new Date(b.deadline).getTime() : Infinity;
-                return dateA - dateB; // Closest date naturally sorts first
+                return dateA - dateB; 
             });
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-2 md:col-span-3 lg:col-span-4 py-20 flex flex-col items-center text-stone-400 space-y-3 w-full"><i data-lucide="sparkles" class="w-8 h-8 opacity-50"></i><p class="text-sm font-semibold tracking-wide">Nothing in this view right now</p></div>`;
+                grid.innerHTML = `<div class="col-span-2 md:col-span-3 lg:col-span-4 py-20 flex flex-col items-center text-stone-400 space-y-3 w-full"><i data-lucide="sparkles" class="w-8 h-8 opacity-50"></i><p class="text-sm font-semibold tracking-wide text-center">Nothing in this view right now</p></div>`;
                 safeCreateIcons(); return;
             }
 
             filtered.forEach((goal) => {
                 const pct = calculateProgress(goal);
                 const card = document.createElement("div");
-                // Using standard grid layout constraints instead of masonry
-                card.className = `bg-white rounded-3xl overflow-hidden border border-stone-100 shadow-[0_2px_15px_rgb(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] cursor-pointer transition-all duration-300 group flex flex-col h-full ${goal.status === 'completed' ? 'opacity-80' : ''}`;
+                card.className = `bg-white rounded-[1.5rem] overflow-hidden border border-stone-100 shadow-[0_2px_15px_rgb(0,0,0,0.02)] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] cursor-pointer transition-all duration-300 group flex flex-col h-full ${goal.status === 'completed' ? 'opacity-80' : ''}`;
                 card.onclick = () => openGoalDetail(goal.id);
 
                 let imgHtml = goal.image 
                     ? `<div class="w-full aspect-[4/3] bg-stone-100 overflow-hidden relative shrink-0"><img src="${goal.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"></div>` 
-                    : `<div class="w-full h-32 bg-gradient-to-br shrink-0 ${goal.gradient || 'from-stone-800 to-stone-600'}"></div>`;
+                    : `<div class="w-full h-28 sm:h-32 bg-gradient-to-br shrink-0 ${goal.gradient || 'from-stone-800 to-stone-600'}"></div>`;
 
                 let badge = goal.status === 'completed' 
-                    ? `<span class="bg-stone-900 text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Achieved</span>`
-                    : `<span class="flex items-center gap-1"><i data-lucide="flag" class="w-3.5 h-3.5"></i> ${getDaysRemaining(goal.deadline)}d left</span>`;
+                    ? `<span class="bg-stone-900 text-white px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">Achieved</span>`
+                    : `<span class="flex items-center gap-1 text-[10px] sm:text-xs"><i data-lucide="flag" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i> ${getDaysRemaining(goal.deadline)}d left</span>`;
 
                 card.innerHTML = `
                     ${imgHtml}
-                    <div class="p-4 sm:p-5 flex flex-col gap-3 flex-1 justify-between">
+                    <div class="p-3.5 sm:p-5 flex flex-col gap-2 sm:gap-3 flex-1 justify-between min-w-0">
                         <div>
-                            <h3 class="text-base font-extrabold tracking-tight text-stone-900 leading-snug">${escapeHtml(goal.title)}</h3>
+                            <h3 class="text-sm sm:text-base font-extrabold tracking-tight text-stone-900 leading-snug break-words line-clamp-2">${escapeHtml(goal.title)}</h3>
                         </div>
-                        <div class="space-y-2 mt-auto">
-                            <div class="flex items-center justify-between text-xs font-semibold text-stone-500">
+                        <div class="space-y-1.5 sm:space-y-2 mt-auto">
+                            <div class="flex items-center justify-between font-semibold text-stone-500">
                                 ${badge}
-                                <span class="text-stone-900">${pct}%</span>
+                                <span class="text-stone-900 text-[10px] sm:text-xs">${pct}%</span>
                             </div>
-                            <div class="w-full bg-stone-100 h-1.5 rounded-full overflow-hidden">
+                            <div class="w-full bg-stone-100 h-1 sm:h-1.5 rounded-full overflow-hidden">
                                 <div class="h-full ${goal.status === 'completed' ? 'bg-emerald-500' : 'bg-stone-900'} rounded-full transition-all" style="width: ${pct}%"></div>
                             </div>
                         </div>
@@ -663,7 +671,7 @@
         function openGoalDetail(id) {
             activeGoalId = id; 
             isMapLocked = true; 
-            calendarOffsetWeeks = 0; // Reset calendar view
+            calendarOffsetWeeks = 0; 
             
             const localToday = new Date();
             selectedDayForEdit = `${localToday.getFullYear()}-${String(localToday.getMonth()+1).padStart(2,'0')}-${String(localToday.getDate()).padStart(2,'0')}`;
@@ -709,7 +717,7 @@
                 hero.className = `relative rounded-[2rem] overflow-hidden bg-gradient-to-br ${goal.gradient || 'from-stone-800 to-stone-600'} shadow-sm border border-stone-200/60 aspect-video max-h-[40vh] flex items-end`; 
             }
 
-            let completedBadge = goal.status === 'completed' ? `<span class="ml-3 px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-lg uppercase tracking-wider">Achieved</span>` : '';
+            let completedBadge = goal.status === 'completed' ? `<span class="ml-2 sm:ml-3 px-2 py-1 sm:px-3 bg-emerald-500 text-white text-[10px] sm:text-xs font-bold rounded-lg uppercase tracking-wider align-middle">Achieved</span>` : '';
 
             let displayDate = "No date";
             if(goal.deadline && !isNaN(new Date(goal.deadline).getTime())) {
@@ -717,13 +725,13 @@
             }
 
             document.getElementById("detailHeroContent").innerHTML = `
-                <div class="flex-1">
-                    <span class="inline-block mb-3 text-xs px-3 py-1 bg-black/20 backdrop-blur-md text-white font-bold rounded-lg uppercase tracking-wider shadow-sm border border-white/20">${escapeHtml(goal.type)}-Term</span>
-                    <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md pr-4">${escapeHtml(goal.title)}${completedBadge}</h2>
-                    <p class="text-sm text-white/90 font-semibold mt-2 drop-shadow-sm flex items-center gap-1.5"><i data-lucide="target" class="w-4 h-4"></i> Target: ${displayDate}</p>
+                <div class="flex-1 min-w-0 pr-2">
+                    <span class="inline-block mb-2 sm:mb-3 text-[10px] sm:text-xs px-2 sm:px-3 py-1 bg-black/20 backdrop-blur-md text-white font-bold rounded-lg uppercase tracking-wider shadow-sm border border-white/20">${escapeHtml(goal.type)}-Term</span>
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white leading-tight drop-shadow-md break-words">${escapeHtml(goal.title)}${completedBadge}</h2>
+                    <p class="text-xs sm:text-sm text-white/90 font-semibold mt-2 drop-shadow-sm flex items-center gap-1.5"><i data-lucide="target" class="w-4 h-4 shrink-0"></i> <span class="truncate">Target: ${displayDate}</span></p>
                 </div>
-                <button onclick="openGoalModal('${goal.id}')" class="p-3 bg-white/20 hover:bg-white/40 backdrop-blur-md text-white rounded-full transition-all shadow-sm border border-white/20 mb-2 active:scale-95" title="Edit Dream">
-                    <i data-lucide="edit-2" class="w-5 h-5"></i>
+                <button onclick="openGoalModal('${goal.id}')" class="p-2 sm:p-3 bg-white/20 hover:bg-white/40 backdrop-blur-md text-white rounded-full transition-all shadow-sm border border-white/20 mb-1 sm:mb-2 active:scale-95 shrink-0" title="Edit Dream">
+                    <i data-lucide="edit-2" class="w-4 h-4 sm:w-5 sm:h-5"></i>
                 </button>
             `;
 
@@ -743,9 +751,9 @@
             const finSec = document.getElementById("detailFinancial");
             if (goal.hasFinance) {
                 finSec.classList.remove("hidden");
-                finSec.className = goal.hasConsistency ? "p-6 bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] space-y-4 md:col-span-1" : "p-6 bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] space-y-4 md:col-span-2";
+                finSec.className = goal.hasConsistency ? "p-5 sm:p-6 bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] space-y-4 md:col-span-1 w-full" : "p-5 sm:p-6 bg-white rounded-3xl border border-stone-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] space-y-4 md:col-span-2 w-full";
                 
-                document.getElementById("financialSavedDisplay").innerHTML = `LKR ${(goal.financeSaved||0).toLocaleString()} <span class="text-sm font-medium text-stone-400">/ LKR ${(goal.financeTarget||0).toLocaleString()}</span>`;
+                document.getElementById("financialSavedDisplay").innerHTML = `LKR ${(goal.financeSaved||0).toLocaleString()} <span class="text-xs sm:text-sm font-medium text-stone-400 block sm:inline">/ LKR ${(goal.financeTarget||0).toLocaleString()}</span>`;
                 const pct = goal.financeTarget > 0 ? Math.min(Math.round((goal.financeSaved / goal.financeTarget) * 100), 100) : 0;
                 document.getElementById("financialPercent").innerText = `${pct}%`;
                 setTimeout(() => { document.getElementById("financialBar").style.width = `${pct}%`; }, 100);
@@ -773,15 +781,15 @@
             tasksContainer.innerHTML = "";
             [...(goal.tasks||[])].sort((a,b) => a.completed - b.completed).forEach(t => {
                 tasksContainer.innerHTML += `
-                    <div class="flex justify-between items-center p-3.5 rounded-2xl border ${t.completed ? 'bg-stone-50 border-stone-100' : 'bg-white border-stone-200 shadow-sm'}">
-                        <label class="flex items-center gap-3 cursor-pointer flex-1 min-w-0">
-                            <div class="relative flex items-center justify-center">
+                    <div class="flex justify-between items-center p-3.5 rounded-2xl border ${t.completed ? 'bg-stone-50 border-stone-100' : 'bg-white border-stone-200 shadow-sm'} w-full">
+                        <label class="flex items-center gap-3 cursor-pointer flex-1 min-w-0 pr-2">
+                            <div class="relative flex items-center justify-center shrink-0">
                                 <input type="checkbox" class="habit-checkbox opacity-0 absolute w-full h-full cursor-pointer z-10" ${t.completed ? 'checked' : ''} onchange="toggleTask('${t.id}')">
                                 <div class="w-5 h-5 rounded-md border-2 border-stone-300 flex items-center justify-center transition-all bg-white"><i data-lucide="check" class="w-3.5 h-3.5 text-white opacity-0 transform scale-50 transition-all"></i></div>
                             </div>
-                            <span class="text-sm font-semibold truncate ${t.completed ? 'line-through text-stone-400' : 'text-stone-700'}">${escapeHtml(t.title)}</span>
+                            <span class="text-xs sm:text-sm font-semibold truncate ${t.completed ? 'line-through text-stone-400' : 'text-stone-700'}">${escapeHtml(t.title)}</span>
                         </label>
-                        <button onclick="deleteTask('${t.id}')" class="text-stone-300 hover:text-red-500 p-1"><i data-lucide="x" class="w-4 h-4"></i></button>
+                        <button onclick="deleteTask('${t.id}')" class="text-stone-300 hover:text-red-500 p-1 shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
                     </div>`;
             });
 
@@ -790,11 +798,11 @@
             jContainer.innerHTML = "";
             [...(goal.logs||[])].sort((a,b) => b.timestamp - a.timestamp).forEach(log => {
                 jContainer.innerHTML += `
-                    <div class="p-5 bg-stone-50 rounded-3xl border border-stone-100 flex flex-col justify-between gap-3">
-                        <p class="text-sm text-stone-700 font-medium leading-relaxed">${escapeHtml(log.text).replace(/\n/g, '<br>')}</p>
-                        <div class="flex justify-between items-center text-xs font-bold text-stone-400 pt-2 border-t border-stone-200/60">
+                    <div class="p-4 sm:p-5 bg-stone-50 rounded-3xl border border-stone-100 flex flex-col justify-between gap-3 w-full">
+                        <p class="text-xs sm:text-sm text-stone-700 font-medium leading-relaxed break-words">${escapeHtml(log.text).replace(/\n/g, '<br>')}</p>
+                        <div class="flex justify-between items-center text-[10px] sm:text-xs font-bold text-stone-400 pt-2 border-t border-stone-200/60">
                             <span>${new Date(log.timestamp).toLocaleDateString()}</span>
-                            <button onclick="deleteLog('${log.id}')" class="hover:text-red-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                            <button onclick="deleteLog('${log.id}')" class="hover:text-red-500 p-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                         </div>
                     </div>`;
             });
@@ -821,12 +829,12 @@
             if (goal.status === 'completed') {
                 cIcon.setAttribute('data-lucide', 'rotate-ccw');
                 cText.innerText = 'Mark Incomplete (Revert)';
-                cBtn.className = "px-8 py-3.5 bg-white border border-stone-200 text-stone-600 text-sm font-bold rounded-full shadow-sm hover:bg-stone-50 transition-all active:scale-95 flex items-center gap-2";
+                cBtn.className = "w-full sm:w-auto px-8 py-3.5 bg-white border border-stone-200 text-stone-600 text-sm font-bold rounded-full shadow-sm hover:bg-stone-50 transition-all active:scale-95 flex items-center justify-center gap-2";
                 cBtn.onclick = revertDream;
             } else {
                 cIcon.setAttribute('data-lucide', 'sparkles');
                 cText.innerText = 'Mark Dream Achieved';
-                cBtn.className = "px-8 py-3.5 bg-gradient-to-r from-stone-900 to-stone-800 text-white text-sm font-bold rounded-full shadow-xl shadow-stone-900/20 hover:scale-105 transition-all active:scale-95 flex items-center gap-2";
+                cBtn.className = "w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-stone-900 to-stone-800 text-white text-sm font-bold rounded-full shadow-xl shadow-stone-900/20 hover:scale-105 transition-all active:scale-95 flex items-center justify-center gap-2";
                 cBtn.onclick = () => openModal('completeModal');
             }
 
@@ -846,14 +854,14 @@
             baseDate.setDate(localToday.getDate() + (calendarOffsetWeeks * 7));
 
             // Align ending exactly to the end of the current week (Sunday)
-            const currentDayOfWeek = baseDate.getDay(); // 0 is Sunday
+            const currentDayOfWeek = baseDate.getDay(); 
             const daysToSunday = currentDayOfWeek === 0 ? 0 : 7 - currentDayOfWeek;
             
             const endDate = new Date(baseDate);
             endDate.setDate(baseDate.getDate() + daysToSunday);
             
             const startDate = new Date(endDate);
-            startDate.setDate(endDate.getDate() - 27); // Exactly 4 weeks (28 days) total
+            startDate.setDate(endDate.getDate() - 27); 
 
             // Month Display Title
             const startMonth = startDate.toLocaleDateString('en-US', { month: 'short' });
@@ -861,18 +869,18 @@
             const displayMonth = startMonth === endDate.toLocaleDateString('en-US', {month: 'short'}) ? endMonth : `${startMonth} - ${endMonth}`;
 
             let html = `
-                <div class="flex justify-between items-center mb-4 px-1">
-                    <button onclick="changeCalendarOffset(-4)" class="p-1.5 bg-stone-50 rounded-lg text-stone-400 hover:text-stone-900 transition-all hover:bg-stone-100 active:scale-95"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                    <h4 class="text-sm font-bold text-stone-800 uppercase tracking-wide">${displayMonth}</h4>
-                    <button onclick="changeCalendarOffset(4)" class="p-1.5 bg-stone-50 rounded-lg text-stone-400 hover:text-stone-900 transition-all hover:bg-stone-100 active:scale-95 ${calendarOffsetWeeks >= 0 ? 'opacity-30 cursor-not-allowed' : ''}"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                <div class="flex justify-between items-center mb-3 sm:mb-4 px-1">
+                    <button onclick="changeCalendarOffset(-4)" class="p-1 sm:p-1.5 bg-stone-50 rounded-lg text-stone-400 hover:text-stone-900 transition-all hover:bg-stone-100 active:scale-95"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                    <h4 class="text-xs sm:text-sm font-bold text-stone-800 uppercase tracking-wide truncate px-2">${displayMonth}</h4>
+                    <button onclick="changeCalendarOffset(4)" class="p-1 sm:p-1.5 bg-stone-50 rounded-lg text-stone-400 hover:text-stone-900 transition-all hover:bg-stone-100 active:scale-95 ${calendarOffsetWeeks >= 0 ? 'opacity-30 cursor-not-allowed' : ''}"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
                 </div>
-                <div class="grid grid-cols-7 gap-1.5 md:gap-2">
+                <div class="grid grid-cols-7 gap-1 md:gap-2">
             `;
 
             // Day of Week Headers
             const dow = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
             dow.forEach(d => {
-                html += `<div class="text-center text-[10px] font-extrabold text-stone-400 uppercase tracking-wider pb-1">${d}</div>`;
+                html += `<div class="text-center text-[9px] sm:text-[10px] font-extrabold text-stone-400 uppercase tracking-wider pb-1">${d}</div>`;
             });
 
             // Populate 28 Days
@@ -901,17 +909,17 @@
                 }
 
                 const isSelected = dateStr === selectedDayForEdit;
-                let ringStyle = isSelected ? "ring-2 ring-stone-900 ring-offset-2" : "";
+                let ringStyle = isSelected ? "ring-2 ring-stone-900 ring-offset-1 sm:ring-offset-2" : "";
                 
                 let indicatorIcon = "";
                 if (dateStr === todayStr) {
-                    indicatorIcon = `<div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-stone-900 rounded-full"></div>`;
+                    indicatorIcon = `<div class="absolute bottom-0.5 sm:bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-stone-900 rounded-full"></div>`;
                 }
 
                 html += `
                     <button type="button" id="cal-card-${dateStr}" onclick="${isFuture ? '' : `selectDate('${dateStr}')`}"
-                        class="relative flex flex-col items-center justify-center aspect-square rounded-xl border transition-all ${baseColor} ${ringStyle} ${isFuture ? 'opacity-40 cursor-not-allowed' : 'hover:-translate-y-0.5 active:scale-95'}">
-                        <span class="text-xs md:text-sm font-extrabold z-10">${dayNum}</span>
+                        class="relative flex flex-col items-center justify-center aspect-square rounded-lg sm:rounded-xl border transition-all ${baseColor} ${ringStyle} ${isFuture ? 'opacity-40 cursor-not-allowed' : 'hover:-translate-y-0.5 active:scale-95'}">
+                        <span class="text-[10px] sm:text-xs md:text-sm font-extrabold z-10">${dayNum}</span>
                         ${indicatorIcon}
                     </button>
                 `;
@@ -946,8 +954,8 @@
             list.innerHTML = "";
             
             if (!dateStr) {
-                document.getElementById("dayEditorTitle").innerHTML = `<i data-lucide="calendar" class="w-4 h-4 text-stone-500"></i> Select a date`;
-                list.innerHTML = `<p class="text-sm text-stone-400">Tap a date above to view or log habits.</p>`;
+                document.getElementById("dayEditorTitle").innerHTML = `<i data-lucide="calendar" class="w-4 h-4 text-stone-500 shrink-0"></i> Select a date`;
+                list.innerHTML = `<p class="text-xs sm:text-sm text-stone-400">Tap a date above to view or log habits.</p>`;
                 return;
             }
 
@@ -955,10 +963,10 @@
             const dObj = new Date(parts[0], parts[1]-1, parts[2]);
             const displayDate = dObj.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
             
-            document.getElementById("dayEditorTitle").innerHTML = `<i data-lucide="calendar" class="w-4 h-4 text-stone-500"></i> Log for: ${displayDate}`;
+            document.getElementById("dayEditorTitle").innerHTML = `<i data-lucide="calendar" class="w-4 h-4 text-stone-500 shrink-0"></i> <span class="truncate">Log for: ${displayDate}</span>`;
             
             if (!goal.habits || goal.habits.length === 0) {
-                list.innerHTML = `<p class="text-sm text-stone-400">No habits set. Click the gear icon above to add some.</p>`;
+                list.innerHTML = `<p class="text-xs sm:text-sm text-stone-400">No habits set. Click the gear icon above to add some.</p>`;
                 safeCreateIcons();
                 return;
             }
@@ -967,12 +975,12 @@
                 const done = (h.history||[]).includes(dateStr);
                 const disabledStr = isMapLocked ? 'disabled' : '';
                 list.innerHTML += `
-                    <label class="flex items-center gap-4 p-3 rounded-xl border border-stone-100 bg-white shadow-sm transition-all ${isMapLocked ? 'cursor-not-allowed' : 'cursor-pointer hover:border-stone-300'}">
-                        <div class="relative flex items-center justify-center">
+                    <label class="flex items-center gap-3 sm:gap-4 p-3 rounded-xl border border-stone-100 bg-white shadow-sm transition-all ${isMapLocked ? 'cursor-not-allowed' : 'cursor-pointer hover:border-stone-300'}">
+                        <div class="relative flex items-center justify-center shrink-0">
                             <input type="checkbox" class="habit-checkbox opacity-0 absolute w-full h-full z-10 ${isMapLocked ? 'cursor-not-allowed' : 'cursor-pointer'}" ${done ? 'checked' : ''} ${disabledStr} onchange="toggleHabitDay('${h.id}', '${dateStr}')">
                             <div class="w-5 h-5 rounded-[6px] border-2 border-stone-300 flex items-center justify-center transition-all bg-stone-50"><i data-lucide="check" class="w-3.5 h-3.5 text-white opacity-0 transform scale-50 transition-all"></i></div>
                         </div>
-                        <span class="text-sm font-semibold ${done ? 'text-stone-400 line-through' : 'text-stone-700'}">${escapeHtml(h.title)}</span>
+                        <span class="text-xs sm:text-sm font-semibold truncate ${done ? 'text-stone-400 line-through' : 'text-stone-700'}">${escapeHtml(h.title)}</span>
                     </label>
                 `;
             });
@@ -989,9 +997,9 @@
             }
             goal.habits.forEach(habit => {
                 container.innerHTML += `
-                    <div class="flex justify-between items-center p-3 bg-stone-50 rounded-xl border border-stone-100 mb-2">
-                        <span class="text-sm font-semibold text-stone-700 truncate flex-1">${escapeHtml(habit.title)}</span>
-                        <button onclick="deleteHabit('${habit.id}')" class="text-stone-400 hover:text-red-500 p-1 bg-white rounded-md shadow-sm border border-stone-200"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <div class="flex justify-between items-center p-3 bg-stone-50 rounded-xl border border-stone-100 mb-2 w-full">
+                        <span class="text-xs sm:text-sm font-semibold text-stone-700 truncate flex-1 pr-2">${escapeHtml(habit.title)}</span>
+                        <button onclick="deleteHabit('${habit.id}')" class="text-stone-400 hover:text-red-500 p-1.5 bg-white rounded-md shadow-sm border border-stone-200 shrink-0"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                     </div>`;
             });
             safeCreateIcons();
@@ -1078,7 +1086,6 @@
         async function handleCreateGoal(e) {
             e.preventDefault();
             try {
-                // Strict Frontend Validation Check
                 const inputDateStr = document.getElementById("goalDeadline").value;
                 if (!inputDateStr) return showToast("A target date is required.", "error");
 
@@ -1250,9 +1257,9 @@
             ['all','short','long','completed'].forEach(x => { 
                 const b = document.getElementById(`filter-${x}`); 
                 if(x===t){
-                    b.className="px-5 py-2 rounded-full text-xs font-bold bg-stone-900 text-white transition-all shadow-sm";
+                    b.className="shrink-0 px-5 py-2 rounded-full text-xs font-bold bg-stone-900 text-white transition-all shadow-sm";
                 } else {
-                    b.className="px-5 py-2 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 transition-all hover:bg-stone-50";
+                    b.className="shrink-0 px-5 py-2 rounded-full text-xs font-bold bg-white text-stone-500 border border-stone-200 transition-all hover:bg-stone-50";
                 } 
             }); 
             renderDashboard(); 
@@ -1300,7 +1307,7 @@
                 }
             };
             reader.readAsText(file);
-            event.target.value = ""; // Reset the input so the exact same file can trigger change again
+            event.target.value = ""; 
         }
     </script>
 </body>
